@@ -56,7 +56,7 @@ def connectToTwitter():
 				print('store that ↑ data')
 				print 'enter 0:'
 				input()
-
+	
 	if OAUTH_TOKEN != '':
 		print('tokened')
 

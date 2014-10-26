@@ -19,14 +19,14 @@ except Exception, e:
 	выкачивает и кладёт на диск в виде 
 	[
 		{
-			idтвита:N, 
-			дата:Date, 
+			idтвита: N, 
+			дата: Date, 
 			другие параметры твита..., 
-			текст_твита_с_ссылками_заменёнными_на_ медиа_айдишники: Text,
-			медиа:{
+			текст_твита_с_ссылками_заменёнными_на_медиа_айдишники: Text,
+			медиа: {
 			 	медиаid1:binaryData, 
 			 	медиаid2:binaryData
-			 }
+			}
 		},
 		{....}
 	]
@@ -73,27 +73,30 @@ def connectToTwitter():
 
 				print('OAUTH_TOKEN: ', OAUTH_TOKEN)
 				print('OAUTH_TOKEN_SECRET: ', OAUTH_TOKEN_SECRET)
-				print('store that ↑ data')
+				print('↑ store that data in Credentials.py')
 				print 'enter 0:'
 				input()
 
 	if OAUTH_TOKEN != '':
 		print('tokened')
+		return Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
-		twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-		return twitter
-
-def loadTimeline(t):
-	timeline = t.get_user_timeline()
-	return timeline
+def loadTimeline(twitter):
+	return twitter.get_user_timeline()
 
 def saveForTwitterTimeline():
 	twitter = connectToTwitter()
 	if twitter:
 		timelineJson = loadTimeline(twitter)
-		# print(timelineJson[0])
 		for j in timelineJson:
-			print j['id'], j['created_at'], j['text']
+			t = j
+			for i in j['entities']['urls']:
+				a0 = i['indices'][0] / 2
+				a1 = i['indices'][1] / 2
+				# print t[:a0], '!!!!!!!!!!!!!', t[a1:]
+				# print i['indices']
+				pass
+			print j['id'], j['text'] # j['created_at'], 
 		# parsed = parseTimeline(timelineJson)
 		# saveToDisk(parsed)
 

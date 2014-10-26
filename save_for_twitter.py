@@ -3,6 +3,16 @@
 
 from twython import Twython
 
+import codecs
+import sys
+streamWriter = codecs.lookup('utf-8')[-1]
+sys.stdout = streamWriter(sys.stdout)
+
+try:
+	import Credentials
+except Exception, e:
+	Credentials = None
+
 """
 	код, который выкачивает твиты аккаунта через API твиттера, 
 	выдирает оттуда все ссылки, в том числе на картинки, 
@@ -30,6 +40,16 @@ def connectToTwitter():
 	OAUTH_TOKEN = ''
 	OAUTH_TOKEN_SECRET = ''
 
+	if Credentials != None:
+		APP_KEY = Credentials.APP_KEY
+		APP_SECRET = Credentials.APP_SECRET
+		OAUTH_TOKEN = Credentials.OAUTH_TOKEN
+		OAUTH_TOKEN_SECRET = Credentials.OAUTH_TOKEN_SECRET
+
+	if APP_KEY == '':
+		print 'You should setup twitter application, and use its Credentials in APP_KEY etc.'
+		return
+
 	if OAUTH_TOKEN == '':
 		print('no token')
 
@@ -56,7 +76,7 @@ def connectToTwitter():
 				print('store that ↑ data')
 				print 'enter 0:'
 				input()
-	
+
 	if OAUTH_TOKEN != '':
 		print('tokened')
 

@@ -1,16 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""
+	The MIT License (MIT)
+	Copyright (c) 2014 Marat S.
+"""
 
 from twython import Twython
 
-import codecs
-import sys
-streamWriter = codecs.lookup('utf-8')[-1]
-sys.stdout = streamWriter(sys.stdout)
-
 try:
 	import Credentials
-except Exception, e:
+except e:
 	Credentials = None
 
 """
@@ -47,7 +44,7 @@ def connectToTwitter():
 		OAUTH_TOKEN_SECRET = Credentials.OAUTH_TOKEN_SECRET
 
 	if APP_KEY == '':
-		print 'You should setup twitter application, and use its Credentials in APP_KEY etc.'
+		print('You should setup twitter application, and use its Credentials in APP_KEY etc.')
 		return
 
 	if OAUTH_TOKEN == '':
@@ -60,8 +57,8 @@ def connectToTwitter():
 			OAUTH_TOKEN = auth['oauth_token']
 			OAUTH_TOKEN_SECRET = auth['oauth_token_secret']
 
-			print 'open this url:', auth['auth_url']
-			print 'and enter pin:'
+			print('open this url:', auth['auth_url'])
+			print('and enter pin:')
 			x = input()
 
 			if x:
@@ -74,7 +71,7 @@ def connectToTwitter():
 				print('OAUTH_TOKEN: ', OAUTH_TOKEN)
 				print('OAUTH_TOKEN_SECRET: ', OAUTH_TOKEN_SECRET)
 				print('↑ store that data in Credentials.py')
-				print 'enter 0:'
+				print('enter 0:')
 				input()
 
 	if OAUTH_TOKEN != '':
@@ -89,18 +86,18 @@ def loadTimeline(twitter):
 #def replace_url_in_twit_with_id_to_media_id():
 def analyseMediaInTwit(text, media):
 	indices = _allIndicesOfMedia(text, media)
-	print indices
+	print(indices)
 
 
 def _allIndicesOfMedia(text, media):
 	indicesArray = []
 
-	if media.has_key('urls'):
+	if 'urls' in media:
 		a = _indicesOfMedia(text, media['urls'])
 		if len(a) > 0:
 			indicesArray.append(a)
 
-	if media.has_key('media'):
+	if 'media' in media:
 		a = _indicesOfMedia(text, media['media'])
 		if len(a) > 0:
 			indicesArray.append(a)
@@ -111,8 +108,8 @@ def _allIndicesOfMedia(text, media):
 def _indicesOfMedia(text, media):
 	indicesArray = []
 	for mediaUrl in media:
-		# urlStarts = mediaUrl['indices'][0]
-		# urlEnds   = mediaUrl['indices'][1]
+		# urlStarts   = mediaUrl['indices'][0]
+		# urlEnds     = mediaUrl['indices'][1]
 		indicesArray += mediaUrl['indices']
 
 	return indicesArray
@@ -123,7 +120,7 @@ def saveForTwitterTimeline():
 	if twitter:
 		timelineJson = loadTimeline(twitter)
 		for twitMeta in timelineJson:
-			if twitMeta.has_key('entities'):
+			if 'entities' in twitMeta:
 				analyseMediaInTwit(twitMeta['text'], twitMeta['entities'])
 
 		# parsed = parseTimeline(timelineJson)

@@ -87,7 +87,7 @@ def loadTimeline(twitter):
 
 
 #def replace_url_in_twit_with_id_to_media_id():
-def _analyseMediaInTwit(text, media):
+def analyseMediaInTwit(text, media):
 	indices = _allIndicesOfMedia(text, media)
 	print indices
 
@@ -124,34 +124,8 @@ def saveForTwitterTimeline():
 		timelineJson = loadTimeline(twitter)
 		for twitMeta in timelineJson:
 			if twitMeta.has_key('entities'):
-				_analyseMediaInTwit(twitMeta['text'], twitMeta['entities'])
-			continue
+				analyseMediaInTwit(twitMeta['text'], twitMeta['entities'])
 
-			textInTwit = twitMeta['text']
-			i = 0
-			if twitMeta['entities'].has_key('urls'):
-				for urlInTwit in twitMeta['entities']['urls']:
-					++i
-					urlStarts = urlInTwit['indices'][0]
-					urlEnds = urlInTwit['indices'][1]
-					# print textInTwit
-					print textInTwit[:urlStarts], 'MEDIAID', i, textInTwit[urlEnds:]
-					# print urlInTwit['indices']
-					pass
-
-			if twitMeta['entities'].has_key('media'):
-				for picInTwit in twitMeta['entities']['media']:
-					++i
-					urlStarts = picInTwit['indices'][0]
-					urlEnds = picInTwit['indices'][1]
-					# print textInTwit
-					print textInTwit[:urlStarts], 'MEDIAID', i, textInTwit[urlEnds:]
-					# print picInTwit['indices']
-					pass
-
-			# print twitMeta['entities']
-
-			# print twitMeta['id'], twitMeta['text'] # twitMeta['created_at'], 
 		# parsed = parseTimeline(timelineJson)
 		# saveToDisk(parsed)
 

@@ -81,22 +81,77 @@ def connectToTwitter():
 		print('tokened')
 		return Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
+
 def loadTimeline(twitter):
 	return twitter.get_user_timeline()
+
+
+#def replace_url_in_twit_with_id_to_media_id():
+def _analyseMediaInTwit(text, media):
+	indices = _allIndicesOfMedia(text, media)
+	print indices
+
+
+def _allIndicesOfMedia(text, media):
+	indicesArray = []
+
+	if media.has_key('urls'):
+		a = _indicesOfMedia(text, media['urls'])
+		if len(a) > 0:
+			indicesArray.append(a)
+
+	if media.has_key('media'):
+		a = _indicesOfMedia(text, media['media'])
+		if len(a) > 0:
+			indicesArray.append(a)
+
+	reveredUrlIndices = sorted(indicesArray, reverse=True)
+	return reveredUrlIndices
+
+def _indicesOfMedia(text, media):
+	indicesArray = []
+	for mediaUrl in media:
+		# urlStarts = mediaUrl['indices'][0]
+		# urlEnds   = mediaUrl['indices'][1]
+		indicesArray += mediaUrl['indices']
+
+	return indicesArray
+
 
 def saveForTwitterTimeline():
 	twitter = connectToTwitter()
 	if twitter:
 		timelineJson = loadTimeline(twitter)
-		for j in timelineJson:
-			t = j
-			for i in j['entities']['urls']:
-				a0 = i['indices'][0] / 2
-				a1 = i['indices'][1] / 2
-				# print t[:a0], '!!!!!!!!!!!!!', t[a1:]
-				# print i['indices']
-				pass
-			print j['id'], j['text'] # j['created_at'], 
+		for twitMeta in timelineJson:
+			if twitMeta.has_key('entities'):
+				_analyseMediaInTwit(twitMeta['text'], twitMeta['entities'])
+			continue
+
+			textInTwit = twitMeta['text']
+			i = 0
+			if twitMeta['entities'].has_key('urls'):
+				for urlInTwit in twitMeta['entities']['urls']:
+					++i
+					urlStarts = urlInTwit['indices'][0]
+					urlEnds = urlInTwit['indices'][1]
+					# print textInTwit
+					print textInTwit[:urlStarts], 'MEDIAID', i, textInTwit[urlEnds:]
+					# print urlInTwit['indices']
+					pass
+
+			if twitMeta['entities'].has_key('media'):
+				for picInTwit in twitMeta['entities']['media']:
+					++i
+					urlStarts = picInTwit['indices'][0]
+					urlEnds = picInTwit['indices'][1]
+					# print textInTwit
+					print textInTwit[:urlStarts], 'MEDIAID', i, textInTwit[urlEnds:]
+					# print picInTwit['indices']
+					pass
+
+			# print twitMeta['entities']
+
+			# print twitMeta['id'], twitMeta['text'] # twitMeta['created_at'], 
 		# parsed = parseTimeline(timelineJson)
 		# saveToDisk(parsed)
 

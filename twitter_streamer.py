@@ -10,7 +10,7 @@ import subprocess
 создаётся каталог с именем id твита, туда кладутся картинки с названиями,
 равными base64 от url источника картинки(так для каждой картинки),
 создаётся подкаталог с названием равным base64 от url прикреплённой к твиту ссылки,
-туда выкачивается полный вариант стриницы, со структурой каталогов, соответствующей пути к странице в url 
+туда выкачивается полный вариант страницы, со структурой каталогов, соответствующей пути к странице в url 
 (и так для каждой ссылки в твите).
 """
 
@@ -45,7 +45,7 @@ def handleNewTweet(tweetData):
             for url_entry in entities['urls']:
                 url = url_entry['expanded_url']
                 try:
-                    subprocess.call(['wget', '-q', '-p', '-k', '-P', tweetId + b'/' + base64.b64encode(bytes(url, "utf-8")) + b'/', url])
+                    subprocess.call(['wget', '-q', '-p', '-k', '-P', tweetId + '/' + base64.b64encode(bytes(url, "utf-8")).decode("ascii") + '/', url])
                     print('Url downloaded: ', url)
                 except:
                     print('Cannot download url: ', url)

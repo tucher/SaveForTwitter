@@ -99,7 +99,9 @@ def saveForTwitterTimeline():
             print('Credentials are wrong??')
         else:
             for twitMeta in timelineJson:
+                # print(twitMeta.keys())
                 if 'entities' in twitMeta:
+                    print(twitMeta['entities'])
                     analyseMediaInTwit(twitMeta['text'], twitMeta['entities'])
 
         # parsed = parseTimeline(timelineJson)

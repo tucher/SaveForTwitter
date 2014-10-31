@@ -14,6 +14,7 @@ import subprocess
 (и так для каждой ссылки в твите).
 """
 
+
 class SaverStreamer(TwythonStreamer):
 
     def on_success(self, data):
@@ -45,7 +46,8 @@ def handleNewTweet(tweetData):
             for url_entry in entities['urls']:
                 url = url_entry['expanded_url']
                 try:
-                    subprocess.call(['wget', '-q', '-p', '-k', '-P', tweetId + '/' + base64.b64encode(bytes(url, "utf-8")).decode("ascii") + '/', url])
+                    subprocess.call(['wget', '-q', '-p', '-k', '-P', tweetId + '/' +
+                                     base64.b64encode(bytes(url, "utf-8")).decode("ascii") + '/', url])
                     print('Url downloaded: ', url)
                 except:
                     print('Cannot download url: ', url)
@@ -60,8 +62,10 @@ def handleNewTweet(tweetData):
                         if not os.path.exists(tweetId):
                             os.makedirs(tweetId)
                         request.urlretrieve(media_url,
-                            tweetId + '/' + base64.b64encode(bytes(media_url, "utf-8")).decode("ascii")
-                            + os.path.splitext(media_url)[-1])
+                                            tweetId + '/' +
+                                            base64.b64encode(
+                                                bytes(media_url, "utf-8")).decode("ascii")
+                                            + os.path.splitext(media_url)[-1])
                         print('Image downloaded: ', media_url)
                     except:
                         print('Cannot download: ', media_url)
@@ -79,7 +83,8 @@ if Credentials is not None:
     OAUTH_TOKEN = Credentials.OAUTH_TOKEN
     OAUTH_TOKEN_SECRET = Credentials.OAUTH_TOKEN_SECRET
 
-    stream = SaverStreamer(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-    stream.user()
+    stream = SaverStreamer(
+        APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+    stream.user(**{'with': 'user'})
 else:
     print('No credentials – no tweets')

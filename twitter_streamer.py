@@ -3,6 +3,7 @@ from urllib import request
 import base64
 import os
 import subprocess
+import json
 """
 скрипт слушает ленту пользователя, переданного через credentials.py,
 печатает в консоль дату и текст твита и результат обработки медиа.
@@ -19,7 +20,7 @@ class SaverStreamer(TwythonStreamer):
 
     def on_success(self, data):
         if 'text' in data:
-            handleNewTweet(data)
+            handle_new_tweet(data)
 
     def on_error(self, status_code, data):
         print(status_code, data)
@@ -30,23 +31,28 @@ except Exception:
     Credentials = None
 
 printed_keys = ['created_at', 'text']
+prefix = 'DownloadedTweets/'
 
 
-def handleNewTweet(tweetData):
-
+def handle_new_tweet(tweet_data):
+    tweet_id = str(tweet_data['id'])
     for key in printed_keys:
-        print(key, ': ', tweetData[key])
+        print(key, ': ', tweet_data[key])
     print('')
-    if 'entities' in tweetData:
-        entities = tweetData['entities']
-        tweetId = str(tweetData['id'])
+    if not os.path.exists(prefix + tweet_id):
+        os.makedirs(prefix + tweet_id)
+    with open(prefix + tweet_id + '/data.json', 'a') as the_file:
+        the_file.write(json.dumps(tweet_data, ensure_ascii=False))
+    if 'entities' in tweet_data:
+        entities = tweet_data['entities']
+
         if 'urls' in entities:
             if len(entities['urls']) > 0:
                 print('Urls:')
             for url_entry in entities['urls']:
                 url = url_entry['expanded_url']
                 try:
-                    subprocess.call(['wget', '-q', '-p', '-k', '-P', tweetId + '/' +
+                    subprocess.call(['wget', '-q', '-p', '-k', '-P', prefix + tweet_id + '/' +
                                      base64.b64encode(bytes(url, "utf-8")).decode("ascii") + '/', url])
                     print('Url downloaded: ', url)
                 except:
@@ -59,10 +65,8 @@ def handleNewTweet(tweetData):
                 if media['type'] == 'photo':
                     media_url = media['media_url_https']
                     try:
-                        if not os.path.exists(tweetId):
-                            os.makedirs(tweetId)
                         request.urlretrieve(media_url,
-                                            tweetId + '/' +
+                                            prefix + tweet_id + '/' +
                                             base64.b64encode(
                                                 bytes(media_url, "utf-8")).decode("ascii")
                                             + os.path.splitext(media_url)[-1])

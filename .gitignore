@@ -54,3 +54,13 @@ docs/_build/
 
 # PyBuilder
 target/
+
+.idea/encodings.xml
+
+*.xml
+
+.idea/SaveForTwitter.iml
+
+.idea/.name
+
+DownloadedTweets/*
